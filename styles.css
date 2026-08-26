@@ -25,6 +25,12 @@
 .rich-link-editor input:focus { border-color: #6655d8; box-shadow: 0 0 0 2px rgba(102,85,216,.1); }
 .rich-link-editor button { height: 34px; padding: 0 12px; border: 1px solid #d9dce5; border-radius: 7px; color: #555d6b; background: white; cursor: pointer; }
 .rich-link-editor button.primary { border-color: #6554d8; color: white; background: #6554d8; }
+.rich-table-editor { display: flex; align-items: flex-end; gap: 10px; padding: 10px 12px; border-bottom: 1px solid #e6e8ed; background: #f7f5ff; }
+.rich-table-editor > label:not(.rich-table-header-option) { width: 82px; display: grid; gap: 4px; color: #5b6473; font-size: 11px; font-weight: 700; }
+.rich-table-editor input[type="number"] { width: 100%; height: 34px; padding: 0 8px; border: 1px solid #d9dce5; border-radius: 7px; outline: none; background: white; }
+.rich-table-header-option { height: 34px; display: flex; align-items: center; gap: 6px; margin-right: auto; color: #555d6b; font-size: 12px; }
+.rich-table-editor button { height: 34px; padding: 0 12px; border: 1px solid #d9dce5; border-radius: 7px; color: #555d6b; background: white; cursor: pointer; }
+.rich-table-editor button.primary { border-color: #6554d8; color: white; background: #6554d8; }
 .rich-text-canvas { min-height: 300px; padding: 25px 28px; outline: none; color: #252b37; font-size: 15px; line-height: 1.75; }
 .rich-text-canvas:empty::before { content: attr(data-placeholder); color: #a3a8b3; pointer-events: none; }
 .rich-text-canvas h2 { margin: 9px 0 15px; font-size: 26px; line-height: 1.3; }
@@ -35,6 +41,10 @@
 .rich-text-canvas figure { margin: 20px 0; }
 .rich-text-canvas figure[data-align="center"] img { margin: 0 auto; }
 .rich-text-canvas figure[data-align="right"] img { margin-left: auto; }
+.rich-text-canvas table { width: 100%; margin: 18px 0; border-collapse: collapse; table-layout: fixed; }
+.rich-text-canvas th, .rich-text-canvas td { min-width: 76px; padding: 9px 11px; border: 1px solid #dfe2e9; vertical-align: top; }
+.rich-text-canvas th { color: #37304e; background: #f4f1ff; font-weight: 750; }
+.rich-text-canvas td { background: white; }
 .rich-text-canvas [data-align="left"] { text-align: left; }
 .rich-text-canvas [data-align="center"] { text-align: center; }
 .rich-text-canvas [data-align="right"] { text-align: right; }
@@ -48,4 +58,6 @@
   .rich-text-canvas { min-height: 260px; padding: 20px 16px; }
   .rich-link-editor { grid-template-columns: 1fr auto auto; }
   .rich-link-editor label { grid-column: 1 / -1; }
+  .rich-table-editor { align-items: center; flex-wrap: wrap; }
+  .rich-table-header-option { width: 100%; order: 3; }
 }

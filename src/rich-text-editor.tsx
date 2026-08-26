@@ -7,11 +7,12 @@ function ToolButton({ label, title, onClick, disabled = false }: { label: ReactN
   return <button type="button" title={title} aria-label={title} onMouseDown={(event) => event.preventDefault()} onClick={onClick} disabled={disabled}>{label}</button>;
 }
 
-function EditorActionIcon({ name }: { name: "undo" | "redo" | "clear-format" }) {
+function EditorActionIcon({ name }: { name: "undo" | "redo" | "clear-format" | "table" }) {
   return <svg data-editor-icon={name} viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
     {name === "undo" ? <><path d="M7.5 5.25 3.75 9l3.75 3.75" /><path d="M4.25 9h6.25a5 5 0 0 1 5 5v.75" /></> : null}
     {name === "redo" ? <><path d="M12.5 5.25 16.25 9l-3.75 3.75" /><path d="M15.75 9H9.5a5 5 0 0 0-5 5v.75" /></> : null}
     {name === "clear-format" ? <><path d="m5.25 11.25 5.5-6.5 4 3.5-5.5 6.5H6.5z" /><path d="m8.5 7.5 4 3.5" /><path d="M9.25 14.75h6" /></> : null}
+    {name === "table" ? <><rect x="3.25" y="4" width="13.5" height="12" rx="1.25" /><path d="M3.25 8h13.5M8 4v12M12.5 4v12" /></> : null}
   </svg>;
 }
 
@@ -39,6 +40,10 @@ export function RichTextEditor({
   const [showLibrary, setShowLibrary] = useState(false);
   const [showLinkEditor, setShowLinkEditor] = useState(false);
   const [linkValue, setLinkValue] = useState("");
+  const [showTableEditor, setShowTableEditor] = useState(false);
+  const [tableRows, setTableRows] = useState(3);
+  const [tableColumns, setTableColumns] = useState(3);
+  const [tableHeader, setTableHeader] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [textColor, setTextColor] = useState("#252b37");
   const [backgroundColor, setBackgroundColor] = useState("#fef3c7");
@@ -138,6 +143,7 @@ export function RichTextEditor({
 
   function openLinkEditor() {
     saveSelection();
+    setShowTableEditor(false);
     setLinkValue("");
     setError("");
     setShowLinkEditor(true);
@@ -156,6 +162,57 @@ export function RichTextEditor({
       setShowLinkEditor(false);
       setLinkValue("");
     } catch { setError("链接地址无效"); }
+  }
+
+  function openTableEditor() {
+    saveSelection();
+    setShowLinkEditor(false);
+    setShowTableEditor(true);
+  }
+
+  function insertTable() {
+    const editor = editorRef.current;
+    if (!editor) return;
+    const rows = Math.min(10, Math.max(1, tableRows));
+    const columns = Math.min(10, Math.max(1, tableColumns));
+    let range = savedRange.current;
+    if (!range || !editor.contains(range.commonAncestorContainer)) {
+      range = document.createRange();
+      range.selectNodeContents(editor);
+      range.collapse(false);
+    }
+    const table = document.createElement("table");
+    const body = document.createElement("tbody");
+    let head: HTMLTableSectionElement | null = null;
+    if (tableHeader) { head = document.createElement("thead"); table.appendChild(head); }
+    table.appendChild(body);
+    for (let rowIndex = 0; rowIndex < rows; rowIndex += 1) {
+      const row = document.createElement("tr");
+      const headerRow = tableHeader && rowIndex === 0;
+      for (let columnIndex = 0; columnIndex < columns; columnIndex += 1) {
+        const cell = document.createElement(headerRow ? "th" : "td");
+        if (headerRow) cell.textContent = `表头 ${columnIndex + 1}`;
+        else cell.appendChild(document.createElement("br"));
+        row.appendChild(cell);
+      }
+      (headerRow ? head! : body).appendChild(row);
+    }
+    const paragraph = document.createElement("p");
+    paragraph.appendChild(document.createElement("br"));
+    range.deleteContents();
+    range.insertNode(table);
+    table.after(paragraph);
+    const firstCell = table.querySelector("th,td");
+    const selection = window.getSelection();
+    if (firstCell && selection) {
+      const cellRange = document.createRange();
+      cellRange.selectNodeContents(firstCell);
+      selection.removeAllRanges();
+      selection.addRange(cellRange);
+      savedRange.current = cellRange.cloneRange();
+    }
+    syncValue();
+    setShowTableEditor(false);
   }
 
   function alignBlock(alignment: "left" | "center" | "right") {
@@ -196,6 +253,7 @@ export function RichTextEditor({
         <ToolButton label={<MediaIcon name="align-center" />} title="居中" onClick={() => alignBlock("center")} />
         <ToolButton label={<MediaIcon name="align-right" />} title="右对齐" onClick={() => alignBlock("right")} />
         <ToolButton label="↗" title="插入链接" onClick={openLinkEditor} />
+        <ToolButton label={<EditorActionIcon name="table" />} title="插入表格" onClick={openTableEditor} />
         <ToolButton label="—" title="水平分隔线" onClick={() => command("insertHorizontalRule")} />
         <i />
         <ToolButton label={<EditorActionIcon name="undo" />} title="撤销" onClick={() => command("undo")} />
@@ -207,6 +265,13 @@ export function RichTextEditor({
         <input id="rich-link-address" type="text" autoFocus value={linkValue} onChange={(event) => setLinkValue(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter") { event.preventDefault(); createLink(); } if (event.key === "Escape") setShowLinkEditor(false); }} placeholder="https://example.com" />
         <button type="button" onClick={() => setShowLinkEditor(false)}>取消</button>
         <button type="button" className="primary" onClick={createLink}>插入</button>
+      </div> : null}
+      {showTableEditor ? <div className="rich-table-editor" role="dialog" aria-label="插入表格">
+        <label><span>行数</span><input type="number" min="1" max="10" value={tableRows} onChange={(event) => setTableRows(Number(event.target.value))} /></label>
+        <label><span>列数</span><input type="number" min="1" max="10" value={tableColumns} onChange={(event) => setTableColumns(Number(event.target.value))} /></label>
+        <label className="rich-table-header-option"><input type="checkbox" checked={tableHeader} onChange={(event) => setTableHeader(event.target.checked)} /><span>首行作为表头</span></label>
+        <button type="button" onClick={() => setShowTableEditor(false)}>取消</button>
+        <button type="button" className="primary" onClick={insertTable}>插入表格</button>
       </div> : null}
       <div
         ref={editorRef}

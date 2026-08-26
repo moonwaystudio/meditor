@@ -31,4 +31,11 @@ describe("RichTextEditor package", () => {
     expect(html).not.toContain("↶");
     expect(html).not.toContain("↷");
   });
+
+  it("exposes a table insertion control", () => {
+    const html = renderToStaticMarkup(<RichTextEditor />);
+
+    expect(html).toContain('title="插入表格"');
+    expect(html).toContain('data-editor-icon="table"');
+  });
 });
