@@ -38,4 +38,17 @@ describe("RichTextEditor package", () => {
     expect(html).toContain('title="插入表格"');
     expect(html).toContain('data-editor-icon="table"');
   });
+
+  it("visually distinguishes links inside the editing canvas", () => {
+    const styles = readFileSync(new URL("../styles.css", import.meta.url), "utf8");
+
+    expect(styles).toContain(".rich-text-canvas a");
+    expect(styles).toMatch(/\.rich-text-canvas a\s*\{[^}]*text-decoration:\s*underline/s);
+  });
+
+  it("reveals the link styling immediately after insertion", () => {
+    const source = readFileSync(new URL("./rich-text-editor.tsx", import.meta.url), "utf8");
+
+    expect(source).toMatch(/execCommand\("createLink"[^;]+;\s*window\.getSelection\(\)\?\.collapseToEnd\(\)/s);
+  });
 });

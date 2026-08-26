@@ -157,6 +157,7 @@ export function RichTextEditor({
       if (!["http:", "https:", "mailto:"].includes(url.protocol)) throw new Error();
       restoreSelection();
       document.execCommand("createLink", false, url.href);
+      window.getSelection()?.collapseToEnd();
       saveSelection();
       syncValue();
       setShowLinkEditor(false);

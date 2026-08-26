@@ -37,6 +37,8 @@
 .rich-text-canvas h3 { margin: 20px 0 10px; font-size: 20px; line-height: 1.35; }
 .rich-text-canvas p { margin: 0 0 13px; }
 .rich-text-canvas blockquote { margin: 16px 0; padding: 10px 16px; border-left: 3px solid #7358d7; color: #5f6470; background: #f7f5ff; }
+.rich-text-canvas a { padding: 1px 2px; border-radius: 3px; color: #5b3fc0; background: #f3efff; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.rich-text-canvas a:hover { color: #43249d; background: #e9e1ff; }
 .rich-text-canvas img { display: block; max-width: 100%; height: auto; border-radius: 10px; }
 .rich-text-canvas figure { margin: 20px 0; }
 .rich-text-canvas figure[data-align="center"] img { margin: 0 auto; }
