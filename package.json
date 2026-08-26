@@ -1,6 +1,6 @@
 {
   "name": "@moonways/meditor",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Reusable React rich-text editor integrated with @moonways/mbox.",
   "type": "module",
   "main": "./dist/index.js",
