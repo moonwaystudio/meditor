@@ -1,12 +1,16 @@
-# @virtual-marketplace/rich-text-editor
+# @moonway/meditor
 
-可复用的 React 富文本编辑器，提供段落、字体样式、颜色、背景色、列表、引用、对齐、链接、撤销/重做，并集成 `@virtual-marketplace/media-library` 选择和上传图片。
+可复用的 React 富文本编辑器，提供段落、字体样式、颜色、背景色、列表、引用、对齐、链接、撤销/重做，并集成 `@moonway/mbox` 选择和上传图片。
+
+```bash
+npm install @moonway/meditor @moonway/mbox
+```
 
 ```tsx
-import { createRestMediaLibraryApi } from "@virtual-marketplace/media-library";
-import "@virtual-marketplace/media-library/styles.css";
-import { RichTextEditor } from "@virtual-marketplace/rich-text-editor";
-import "@virtual-marketplace/rich-text-editor/styles.css";
+import { createRestMediaLibraryApi } from "@moonway/mbox";
+import "@moonway/mbox/styles.css";
+import { RichTextEditor } from "@moonway/meditor";
+import "@moonway/meditor/styles.css";
 
 const mediaApi = createRestMediaLibraryApi();
 

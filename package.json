@@ -1,7 +1,7 @@
 {
-  "name": "@virtual-marketplace/rich-text-editor",
+  "name": "@moonway/meditor",
   "version": "0.1.0",
-  "private": true,
+  "description": "Reusable React rich-text editor integrated with @moonway/mbox.",
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -22,15 +22,41 @@
   "sideEffects": [
     "./styles.css"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/moonwaystudio/meditor.git"
+  },
+  "homepage": "https://github.com/moonwaystudio/meditor#readme",
+  "bugs": {
+    "url": "https://github.com/moonwaystudio/meditor/issues"
+  },
+  "keywords": [
+    "react",
+    "rich-text-editor",
+    "wysiwyg",
+    "image-manager"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.json",
+    "test": "vitest run",
     "prepack": "npm run build"
   },
   "dependencies": {
-    "@virtual-marketplace/media-library": "0.1.0"
+    "@moonway/mbox": "0.1.0"
   },
   "peerDependencies": {
     "react": ">=18.0.0",
     "react-dom": ">=18.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "18.3.31",
+    "@types/react-dom": "18.3.7",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "typescript": "5.9.3",
+    "vitest": "3.2.7"
   }
 }

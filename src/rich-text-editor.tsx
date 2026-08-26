@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { defaultMediaLibraryApi, MediaIcon, MediaLibraryDialog, MediaLibraryTrigger, type MediaAsset, type MediaLibraryApi } from "@virtual-marketplace/media-library";
+import { defaultMediaLibraryApi, MediaIcon, MediaLibraryDialog, MediaLibraryTrigger, type MediaAsset, type MediaLibraryApi } from "@moonway/mbox";
 
 function ToolButton({ label, title, onClick, disabled = false }: { label: ReactNode; title: string; onClick: () => void; disabled?: boolean }) {
   return <button type="button" title={title} aria-label={title} onMouseDown={(event) => event.preventDefault()} onClick={onClick} disabled={disabled}>{label}</button>;
