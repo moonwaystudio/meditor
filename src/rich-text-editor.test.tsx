@@ -51,4 +51,10 @@ describe("RichTextEditor package", () => {
 
     expect(source).toMatch(/execCommand\("createLink"[^;]+;\s*window\.getSelection\(\)\?\.collapseToEnd\(\)/s);
   });
+
+  it("uses an explicit JavaScript extension in the ESM package entry", () => {
+    const source = readFileSync(new URL("./index.ts", import.meta.url), "utf8");
+
+    expect(source).toContain('from "./rich-text-editor.js"');
+  });
 });
