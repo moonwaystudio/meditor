@@ -7,6 +7,14 @@ function ToolButton({ label, title, onClick, disabled = false }: { label: ReactN
   return <button type="button" title={title} aria-label={title} onMouseDown={(event) => event.preventDefault()} onClick={onClick} disabled={disabled}>{label}</button>;
 }
 
+function EditorActionIcon({ name }: { name: "undo" | "redo" | "clear-format" }) {
+  return <svg data-editor-icon={name} viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    {name === "undo" ? <><path d="M7.5 5.25 3.75 9l3.75 3.75" /><path d="M4.25 9h6.25a5 5 0 0 1 5 5v.75" /></> : null}
+    {name === "redo" ? <><path d="M12.5 5.25 16.25 9l-3.75 3.75" /><path d="M15.75 9H9.5a5 5 0 0 0-5 5v.75" /></> : null}
+    {name === "clear-format" ? <><path d="m5.25 11.25 5.5-6.5 4 3.5-5.5 6.5H6.5z" /><path d="m8.5 7.5 4 3.5" /><path d="M9.25 14.75h6" /></> : null}
+  </svg>;
+}
+
 export type RichTextEditorProps = {
   name?: string;
   initialValue?: string;
@@ -29,6 +37,8 @@ export function RichTextEditor({
   const initialized = useRef(false);
   const [value, setValue] = useState(initialValue);
   const [showLibrary, setShowLibrary] = useState(false);
+  const [showLinkEditor, setShowLinkEditor] = useState(false);
+  const [linkValue, setLinkValue] = useState("");
   const [uploading, setUploading] = useState(false);
   const [textColor, setTextColor] = useState("#252b37");
   const [backgroundColor, setBackgroundColor] = useState("#fef3c7");
@@ -56,6 +66,16 @@ export function RichTextEditor({
     const selection = window.getSelection();
     if (!selection?.rangeCount || !editorRef.current?.contains(selection.anchorNode)) return;
     savedRange.current = selection.getRangeAt(0).cloneRange();
+  }
+
+  function restoreSelection() {
+    const editor = editorRef.current;
+    const selection = window.getSelection();
+    const range = savedRange.current;
+    if (!editor || !selection || !range || !editor.contains(range.commonAncestorContainer)) return;
+    editor.focus();
+    selection.removeAllRanges();
+    selection.addRange(range);
   }
 
   function applyColor(commandName: "foreColor" | "hiliteColor", color: string) {
@@ -116,13 +136,25 @@ export function RichTextEditor({
     finally { setUploading(false); }
   }
 
+  function openLinkEditor() {
+    saveSelection();
+    setLinkValue("");
+    setError("");
+    setShowLinkEditor(true);
+  }
+
   function createLink() {
-    const value = window.prompt("输入链接地址（http、https 或 mailto）");
-    if (!value) return;
     try {
-      const url = new URL(value, window.location.origin);
+      const source = linkValue.trim();
+      if (!source) throw new Error();
+      const url = new URL(/^[a-z][a-z\d+.-]*:/i.test(source) ? source : `https://${source}`);
       if (!["http:", "https:", "mailto:"].includes(url.protocol)) throw new Error();
-      command("createLink", value);
+      restoreSelection();
+      document.execCommand("createLink", false, url.href);
+      saveSelection();
+      syncValue();
+      setShowLinkEditor(false);
+      setLinkValue("");
     } catch { setError("链接地址无效"); }
   }
 
@@ -163,13 +195,19 @@ export function RichTextEditor({
         <ToolButton label={<MediaIcon name="align-left" />} title="左对齐" onClick={() => alignBlock("left")} />
         <ToolButton label={<MediaIcon name="align-center" />} title="居中" onClick={() => alignBlock("center")} />
         <ToolButton label={<MediaIcon name="align-right" />} title="右对齐" onClick={() => alignBlock("right")} />
-        <ToolButton label="↗" title="插入链接" onClick={createLink} />
+        <ToolButton label="↗" title="插入链接" onClick={openLinkEditor} />
         <ToolButton label="—" title="水平分隔线" onClick={() => command("insertHorizontalRule")} />
         <i />
-        <ToolButton label="↶" title="撤销" onClick={() => command("undo")} />
-        <ToolButton label="↷" title="重做" onClick={() => command("redo")} />
-        <ToolButton label="Tx" title="清除格式" onClick={() => command("removeFormat")} />
+        <ToolButton label={<EditorActionIcon name="undo" />} title="撤销" onClick={() => command("undo")} />
+        <ToolButton label={<EditorActionIcon name="redo" />} title="重做" onClick={() => command("redo")} />
+        <ToolButton label={<EditorActionIcon name="clear-format" />} title="清除格式" onClick={() => command("removeFormat")} />
       </div>
+      {showLinkEditor ? <div className="rich-link-editor" role="dialog" aria-label="插入链接">
+        <label htmlFor="rich-link-address">链接地址</label>
+        <input id="rich-link-address" type="text" autoFocus value={linkValue} onChange={(event) => setLinkValue(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter") { event.preventDefault(); createLink(); } if (event.key === "Escape") setShowLinkEditor(false); }} placeholder="https://example.com" />
+        <button type="button" onClick={() => setShowLinkEditor(false)}>取消</button>
+        <button type="button" className="primary" onClick={createLink}>插入</button>
+      </div> : null}
       <div
         ref={editorRef}
         className="rich-text-canvas"
