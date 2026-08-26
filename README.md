@@ -1,16 +1,16 @@
-# @moonway/meditor
+# @moonways/meditor
 
-可复用的 React 富文本编辑器，提供段落、字体样式、颜色、背景色、列表、引用、对齐、链接、撤销/重做，并集成 `@moonway/mbox` 选择和上传图片。
+可复用的 React 富文本编辑器，提供段落、字体样式、颜色、背景色、列表、引用、对齐、链接、撤销/重做，并集成 `@moonways/mbox` 选择和上传图片。
 
 ```bash
-npm install @moonway/meditor @moonway/mbox
+npm install @moonways/meditor @moonways/mbox
 ```
 
 ```tsx
-import { createRestMediaLibraryApi } from "@moonway/mbox";
-import "@moonway/mbox/styles.css";
-import { RichTextEditor } from "@moonway/meditor";
-import "@moonway/meditor/styles.css";
+import { createRestMediaLibraryApi } from "@moonways/mbox";
+import "@moonways/mbox/styles.css";
+import { RichTextEditor } from "@moonways/meditor";
+import "@moonways/meditor/styles.css";
 
 const mediaApi = createRestMediaLibraryApi();
 

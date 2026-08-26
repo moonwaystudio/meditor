@@ -1,7 +1,7 @@
 {
-  "name": "@moonway/meditor",
+  "name": "@moonways/meditor",
   "version": "0.1.0",
-  "description": "Reusable React rich-text editor integrated with @moonway/mbox.",
+  "description": "Reusable React rich-text editor integrated with @moonways/mbox.",
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -45,7 +45,7 @@
     "prepack": "npm run build"
   },
   "dependencies": {
-    "@moonway/mbox": "0.1.0"
+    "@moonways/mbox": "0.1.0"
   },
   "peerDependencies": {
     "react": ">=18.0.0",
