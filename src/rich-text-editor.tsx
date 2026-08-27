@@ -251,6 +251,17 @@ export function RichTextEditor({
     syncValue();
   }
 
+  function toggleBlockQuote() {
+    const editor = editorRef.current;
+    if (!editor) return;
+    editor.focus();
+    const anchor = window.getSelection()?.anchorNode;
+    const element = anchor instanceof Element ? anchor : anchor?.parentElement;
+    const blockQuote = element?.closest("blockquote");
+    document.execCommand("formatBlock", false, blockQuote && editor.contains(blockQuote) ? "p" : "blockquote");
+    syncValue();
+  }
+
   return <div className="rich-text-field">
     <div className="rich-text-editor" onBlur={saveSelection}>
       <div className="rich-text-toolbar" role="toolbar" aria-label="富文本工具栏">
@@ -269,7 +280,7 @@ export function RichTextEditor({
         <i />
         <ToolButton label="•≡" title="无序列表" onClick={() => command("insertUnorderedList")} />
         <ToolButton label="1≡" title="有序列表" onClick={() => command("insertOrderedList")} />
-        <ToolButton label="❝" title="引用" onClick={() => command("formatBlock", "blockquote")} />
+        <ToolButton label="❝" title="引用" onClick={toggleBlockQuote} />
         <i />
         <ToolButton label={<MediaIcon name="align-left" />} title="左对齐" onClick={() => alignBlock("left")} />
         <ToolButton label={<MediaIcon name="align-center" />} title="居中" onClick={() => alignBlock("center")} />
