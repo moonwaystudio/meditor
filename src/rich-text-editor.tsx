@@ -18,6 +18,13 @@ function EditorActionIcon({ name }: { name: "undo" | "redo" | "clear-format" | "
   </svg>;
 }
 
+function TransparentBackgroundIcon() {
+  return <svg data-editor-icon="transparent-background" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="m5.5 15 3.7-10h1.6l3.7 10M7 11h6" />
+    <path d="m4 16 12-12" stroke="#d14343" />
+  </svg>;
+}
+
 export type RichTextEditorProps = {
   name?: string;
   initialValue?: string;
@@ -277,6 +284,7 @@ export function RichTextEditor({
         <ToolButton label="S" title="删除线" onClick={() => command("strikeThrough")} />
         <label className="rich-color-control" title="文字颜色"><span>A</span><i style={{ backgroundColor: textColor }} /><input type="color" aria-label="文字颜色" value={textColor} onMouseDown={saveSelection} onChange={(event) => { setTextColor(event.target.value); applyColor("foreColor", event.target.value); }} /></label>
         <label className="rich-color-control rich-background-control" title="文字背景色"><span style={{ backgroundColor }}>A</span><input type="color" aria-label="文字背景色" value={backgroundColor} onMouseDown={saveSelection} onChange={(event) => { setBackgroundColor(event.target.value); applyColor("hiliteColor", event.target.value); }} /></label>
+        <ToolButton label={<TransparentBackgroundIcon />} title="透明背景" onClick={() => applyColor("hiliteColor", "transparent")} />
         <i />
         <ToolButton label="•≡" title="无序列表" onClick={() => command("insertUnorderedList")} />
         <ToolButton label="1≡" title="有序列表" onClick={() => command("insertOrderedList")} />

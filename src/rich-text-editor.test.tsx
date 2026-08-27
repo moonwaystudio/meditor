@@ -48,6 +48,14 @@ describe("RichTextEditor package", () => {
     expect(html).toContain('<option value="32">32px</option>');
   });
 
+  it("exposes a control that clears only the text background", () => {
+    const html = renderToStaticMarkup(<RichTextEditor />);
+    const source = readFileSync(new URL("./rich-text-editor.tsx", import.meta.url), "utf8");
+
+    expect(html).toContain('aria-label="透明背景"');
+    expect(source).toContain('applyColor("hiliteColor", "transparent")');
+  });
+
   it("toggles the current quotation back to a paragraph", () => {
     const source = readFileSync(new URL("./rich-text-editor.tsx", import.meta.url), "utf8");
 
