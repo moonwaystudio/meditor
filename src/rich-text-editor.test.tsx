@@ -48,6 +48,13 @@ describe("RichTextEditor package", () => {
     expect(html).toContain('<option value="32">32px</option>');
   });
 
+  it("toggles the current quotation back to a paragraph", () => {
+    const source = readFileSync(new URL("./rich-text-editor.tsx", import.meta.url), "utf8");
+
+    expect(source).toMatch(/function toggleBlockQuote[\s\S]+closest\("blockquote"\)[\s\S]+\? "p" : "blockquote"/);
+    expect(source).toContain('title="引用" onClick={toggleBlockQuote}');
+  });
+
   it("visually distinguishes links inside the editing canvas", () => {
     const styles = readFileSync(new URL("../styles.css", import.meta.url), "utf8");
 
