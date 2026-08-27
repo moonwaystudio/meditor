@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { defaultMediaLibraryApi, MediaIcon, MediaLibraryDialog, MediaLibraryTrigger, type MediaAsset, type MediaLibraryApi } from "@moonways/mbox";
 
+const fontSizes = [12, 14, 16, 18, 20, 24, 32, 40] as const;
+
 function ToolButton({ label, title, onClick, disabled = false }: { label: ReactNode; title: string; onClick: () => void; disabled?: boolean }) {
   return <button type="button" title={title} aria-label={title} onMouseDown={(event) => event.preventDefault()} onClick={onClick} disabled={disabled}>{label}</button>;
 }
@@ -45,6 +47,7 @@ export function RichTextEditor({
   const [tableColumns, setTableColumns] = useState(3);
   const [tableHeader, setTableHeader] = useState(true);
   const [uploading, setUploading] = useState(false);
+  const [fontSize, setFontSize] = useState("");
   const [textColor, setTextColor] = useState("#252b37");
   const [backgroundColor, setBackgroundColor] = useState("#fef3c7");
   const [error, setError] = useState("");
@@ -95,6 +98,23 @@ export function RichTextEditor({
     document.execCommand("styleWithCSS", false, "true");
     const applied = document.execCommand(commandName, false, color);
     if (!applied && commandName === "hiliteColor") document.execCommand("backColor", false, color);
+    saveSelection();
+    syncValue();
+  }
+
+  function applyFontSize(size: string) {
+    const editor = editorRef.current;
+    if (!editor || !fontSizes.includes(Number(size) as (typeof fontSizes)[number])) return;
+    restoreSelection();
+    document.execCommand("styleWithCSS", false, "false");
+    document.execCommand("fontSize", false, "7");
+    editor.querySelectorAll('font[size="7"]').forEach((font) => {
+      const span = document.createElement("span");
+      span.style.fontSize = `${size}px`;
+      while (font.firstChild) span.appendChild(font.firstChild);
+      font.replaceWith(span);
+    });
+    document.execCommand("styleWithCSS", false, "true");
     saveSelection();
     syncValue();
   }
@@ -238,6 +258,7 @@ export function RichTextEditor({
         <label className="rich-upload-button" title="上传到图片管理器并插入"><MediaIcon name="upload" /><input type="file" accept="image/jpeg,image/png,image/webp" multiple onChange={(event) => { if (event.target.files) void uploadAndInsert(Array.from(event.target.files)); event.target.value = ""; }} /></label>
         <i />
         <select aria-label="段落格式" defaultValue="p" onChange={(event) => command("formatBlock", event.target.value)}><option value="p">正文</option><option value="h2">标题 2</option><option value="h3">标题 3</option><option value="blockquote">引用</option></select>
+        <select className="rich-font-size-select" aria-label="字体大小" value={fontSize} onMouseDown={saveSelection} onChange={(event) => { setFontSize(event.target.value); applyFontSize(event.target.value); }}><option value="">字号</option>{fontSizes.map((size) => <option value={size} key={size}>{size}px</option>)}</select>
         <i />
         <ToolButton label="B" title="粗体" onClick={() => command("bold")} />
         <ToolButton label="I" title="斜体" onClick={() => command("italic")} />
