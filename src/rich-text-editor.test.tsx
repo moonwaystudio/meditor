@@ -39,6 +39,15 @@ describe("RichTextEditor package", () => {
     expect(html).toContain('data-editor-icon="table"');
   });
 
+  it("exposes a font-size control with explicit pixel sizes", () => {
+    const html = renderToStaticMarkup(<RichTextEditor />);
+
+    expect(html).toContain('aria-label="字体大小"');
+    expect(html).toMatch(/<option value=""[^>]*>字号<\/option>/);
+    expect(html).toContain('<option value="16">16px</option>');
+    expect(html).toContain('<option value="32">32px</option>');
+  });
+
   it("visually distinguishes links inside the editing canvas", () => {
     const styles = readFileSync(new URL("../styles.css", import.meta.url), "utf8");
 
