@@ -1,6 +1,6 @@
 # @moonways/meditor
 
-可复用的 React 富文本编辑器，提供段落、字体大小、字体样式、颜色、背景色、列表、引用、对齐、链接、撤销/重做，并集成 `@moonways/mbox` 选择和上传图片。
+可复用的 React 富文本编辑器，提供段落、字体大小、字体样式、颜色、背景色与透明背景、列表、引用、对齐、链接、撤销/重做，并集成 `@moonways/mbox` 选择和上传图片。
 
 ```bash
 npm install @moonways/meditor @moonways/mbox
